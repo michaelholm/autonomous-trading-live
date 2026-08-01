@@ -91,3 +91,19 @@ file starts fresh from launch and only covers what happens here.
   as always. The dashboard password the account owner shared directly in
   chat (for the contributor-facing balance/journal viewer) was flagged for
   rotation since chat transcripts persist; not yet confirmed rotated.
+
+## SEC Filing Check
+
+- 2026-08-01: ported the paper account's newly-added SEC Filing Check
+  section (SEC EDGAR full-text filings — 8-K material events, Form 3/4/5
+  insider transactions — as a free, no-API-key, primary-source complement
+  to the existing news pull) to this account, adapted only by trimming the
+  paper account's account-specific cross-references (its own recurring
+  quote-issue tickers, its 10 req/sec framing) to match this file's more
+  condensed style. Added the same three edits: the new section itself
+  (Research Scope, before Watchlist Policy), a cross-reference from
+  Decision Framework question 3, and an entry in the shared-sections list.
+  Since all seven live triggers are `"http_api"`-owned (no `meta_mcp`
+  triggers exist on this account — every one was created through the
+  Routines UI), all seven needed a manual paste rather than the mixed
+  `update_trigger`/manual-paste split used on the paper account.
