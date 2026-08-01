@@ -56,16 +56,38 @@ file starts fresh from launch and only covers what happens here.
   contributing) — the existing Portfolio Drawdown Circuit Breaker
   auto-resumes after a cooldown and wasn't designed to catch a runaway
   failure mode specifically.
-- **Pending before triggers can be created**: a dedicated CCR
-  environment with this account's own `ALPACA_API_KEY`/
-  `ALPACA_SECRET_KEY` (live, not paper) needs to exist. Once it does,
-  all seven triggers should be created via `create_trigger` from a
-  directly-driven session (not the Routines UI) so they're agent-owned
-  from the start — the paper account's `HISTORY.md` documents at length
-  why UI-created triggers on that account became a recurring source of
-  `"http_api"`-lockout and content-fidelity incidents; starting
-  agent-owned avoids that failure class entirely, assuming
-  `create_trigger`'s repo-binding actually attaches correctly (verify
-  `session_context.sources` is non-null in a fresh `list_triggers` pull
-  before enabling any of them — this has failed before on the paper
-  account, for reasons never fully diagnosed).
+- **Environment created**: account owner created the `auto-trading-live`
+  CCR environment. Real Alpaca live credentials don't exist yet (the live
+  brokerage account itself hasn't been opened), so `ALPACA_API_KEY`/
+  `ALPACA_SECRET_KEY` were set to placeholder values for the account owner
+  to fill in once the account is funded.
+- **Trigger creation**: attempted `create_trigger` first, agent-owned as
+  planned below. It reproduced the paper account's known repo-binding bug
+  exactly — the resulting trigger had no `sources` field at all — on the
+  very first attempt, confirming this is a platform-level issue and not
+  something specific to the paper account's history. The broken test
+  trigger was deleted via `delete_trigger` before it could ever fire.
+  Fell back to the same path the paper account ultimately relies on: all
+  seven triggers were created by the account owner directly through the
+  claude.ai Routines UI, using seven prepared prompt files sent via
+  `SendUserFile`. This makes all seven `"http_api"`-owned rather than
+  agent-owned, meaning future edits (content or schedule) require the UI
+  again, not `update_trigger` — confirmed by testing `update_trigger`
+  against one of them, which failed with the same ownership error the
+  paper account's `HISTORY.md` documents for content edits, showing the
+  restriction also covers cron-only edits.
+- **Cron bug found and fixed**: all seven UI-created triggers initially had
+  the wrong schedule — each fired exactly one hour later than intended
+  (e.g. `45 14 * * *` instead of `45 13 * * 1-5`) and with no weekday
+  restriction (fired every day, not just Mon-Fri). Presented the account
+  owner a before/after cron table for all seven; they corrected each one
+  manually in the Routines UI. Re-verified afterward: all seven now have
+  the correct cron (weekdays only, correct ET time), byte-for-byte correct
+  content, correct repo binding, and are enabled.
+- **Open item**: the Capital Preservation Halt section still contains the
+  literal placeholder `[DATE — fill in once the account is funded]` in all
+  seven live trigger prompts. Once real capital is deposited, this needs a
+  real date — another round of Routines UI edits, verified byte-for-byte
+  as always. The dashboard password the account owner shared directly in
+  chat (for the contributor-facing balance/journal viewer) was flagged for
+  rotation since chat transcripts persist; not yet confirmed rotated.

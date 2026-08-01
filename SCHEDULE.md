@@ -19,13 +19,21 @@ live account, see [`HISTORY.md`](./HISTORY.md).
 
 | Routine | Time (ET) | Cron (UTC, EDT offset) | Trigger ID |
 |---|---|---|---|
-| Research (1st) | 9:45 AM | `45 13 * * 1-5` | `[TBD — created pending environment setup]` |
-| Trade Evaluation (1st) | 10:00 AM | `0 14 * * 1-5` | `[TBD]` |
-| Research (2nd) | 12:15 PM | `15 16 * * 1-5` | `[TBD]` |
-| Trade Evaluation (2nd) | 12:30 PM | `30 16 * * 1-5` | `[TBD]` |
-| Research (3rd) | 2:45 PM | `45 18 * * 1-5` | `[TBD]` |
-| Trade Evaluation (3rd) | 3:00 PM | `0 19 * * 1-5` | `[TBD]` |
-| End-of-day Journal | 4:15 PM | `15 20 * * 1-5` | `[TBD]` |
+| Research (1st) | 9:45 AM | `45 13 * * 1-5` | `trig_01CS8sRY2o5YoE3ctZFDakst` |
+| Trade Evaluation (1st) | 10:00 AM | `0 14 * * 1-5` | `trig_013kYph3PYCRxrP8gmWV8BRe` |
+| Research (2nd) | 12:15 PM | `15 16 * * 1-5` | `trig_01Tubgq2mpbrThMqCMvVjFqq` |
+| Trade Evaluation (2nd) | 12:30 PM | `30 16 * * 1-5` | `trig_01SCet4i7UoM9zMoW9Aevrq9` |
+| Research (3rd) | 2:45 PM | `45 18 * * 1-5` | `trig_01GUQeW99f59fDuK3ZEFbGvH` |
+| Trade Evaluation (3rd) | 3:00 PM | `0 19 * * 1-5` | `trig_0152oEV687LspPdmKaQUCgq3` |
+| End-of-day Journal | 4:15 PM | `15 20 * * 1-5` | `trig_01115fDRa8iQUDTPHMTiBZL6` |
+
+All seven created via the claude.ai Routines UI (`"http_api"`-owned) after
+`create_trigger` reproduced the paper account's known repo-binding bug on a
+test trigger (created with no `sources` at all — deleted before it could
+fire). Content and repo binding verified byte-for-byte correct on first
+attempt for all seven; the only issue found was the cron schedule (fired
+daily instead of weekdays-only, and one hour later than intended on all
+seven) — corrected via the Routines UI. See `HISTORY.md`.
 
 Same schedule shape as the paper account (three evenly-spaced
 Research/Trade-Evaluation pairs, one end-of-day Journal) — that spacing
@@ -116,14 +124,16 @@ noting which specific daily window that firing corresponds to.
 - Appended line: "This firing corresponds to the 4:15 PM ET end-of-day
   journal window."
 
-**All seven triggers should be created via `create_trigger` from a
-directly-driven session**, not the claude.ai Routines UI — this makes them
-agent-owned (`"meta_mcp"`) from the start, avoiding the entire class of
-`"http_api"`-lockout and content-fidelity incidents documented at length in
-the paper account's `HISTORY.md`. Before enabling any of them, verify
-`session_context.sources` is populated (not `null`) in a fresh
-`list_triggers` pull — the paper account hit a real, reproducible bug where
-`create_trigger` occasionally fails to attach a repo binding.
+All seven triggers now exist and are enabled — see the trigger ID table
+above. `create_trigger` reproduced the paper account's known repo-binding
+bug on a test trigger (created with no `sources` at all), so all seven were
+instead created via the claude.ai Routines UI, making them `"http_api"`-owned
+rather than agent-owned. Content and repo binding were verified byte-for-byte
+correct on first attempt for all seven; the only defect found was the cron
+schedule (see the table note above), corrected via the same UI. Because
+these are `"http_api"`-owned, future content or schedule edits will need to
+go through the Routines UI again, not `update_trigger` — see `HISTORY.md`
+for the full incident record.
 
 ### Which triggers carry which extra sections
 
@@ -336,7 +346,12 @@ Track portfolio performance against SPY as an explicit benchmark, not just an im
    hour (e.g. `45 13` → `45 14`) when EST begins. (Same issue as the
    paper account — see that repo's `HISTORY.md` for the original
    discovery.)
-3. **No triggers exist yet** — this file documents the intended text and
-   schedule; the actual `create_trigger` calls are pending a dedicated
-   CCR environment with this account's own Alpaca live credentials. See
-   `HISTORY.md`.
+3. **Live Alpaca credentials not yet in place.** All seven triggers exist,
+   are enabled, and are correctly scheduled and bound to this repo, but the
+   `auto-trading-live` CCR environment currently holds placeholder values
+   for `ALPACA_API_KEY`/`ALPACA_SECRET_KEY` — the live Alpaca account itself
+   hasn't been created yet. Every firing will fail until real credentials
+   replace the placeholder. The Capital Preservation Halt section's starting
+   date (`[DATE — fill in once the account is funded]`) also needs a real
+   value once capital is actually deposited, which will require editing all
+   seven trigger prompts again via the Routines UI. See `HISTORY.md`.
