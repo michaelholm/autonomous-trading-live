@@ -83,7 +83,19 @@ file starts fresh from launch and only covers what happens here.
   owner a before/after cron table for all seven; they corrected each one
   manually in the Routines UI. Re-verified afterward: all seven now have
   the correct cron (weekdays only, correct ET time), byte-for-byte correct
-  content, correct repo binding, and are enabled.
+  content, correct repo binding, and were enabled at that point.
+- **Paused pending funding**: with real Alpaca credentials still not in
+  place (the `auto-trading-live` CCR environment holds placeholder
+  `ALPACA_API_KEY`/`ALPACA_SECRET_KEY` values), the account owner paused
+  all seven triggers via the Routines UI rather than let them fire and
+  error out on every window. Confirmed paused directly by the account
+  owner — this state isn't visible to a directly-driven session via
+  `list_triggers`, which doesn't expose an enabled/paused field for
+  `http_api`-owned triggers, so this has to be taken on the account
+  owner's word rather than independently re-verified. All seven will need
+  to be manually re-enabled via the Routines UI once real credentials and
+  capital are in place — this is not something a session can flip back on
+  from here either.
 - **Open item**: the Capital Preservation Halt section still contains the
   literal placeholder `[DATE — fill in once the account is funded]` in all
   seven live trigger prompts. Once real capital is deposited, this needs a

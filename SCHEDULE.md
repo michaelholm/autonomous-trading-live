@@ -124,8 +124,11 @@ noting which specific daily window that firing corresponds to.
 - Appended line: "This firing corresponds to the 4:15 PM ET end-of-day
   journal window."
 
-All seven triggers now exist and are enabled — see the trigger ID table
-above. `create_trigger` reproduced the paper account's known repo-binding
+All seven triggers now exist — see the trigger ID table above. They were
+enabled at creation but are currently paused by the account owner pending
+real Alpaca credentials (see Known Limitations below); re-enable each via
+the Routines UI once the account is funded. `create_trigger` reproduced
+the paper account's known repo-binding
 bug on a test trigger (created with no `sources` at all), so all seven were
 instead created via the claude.ai Routines UI, making them `"http_api"`-owned
 rather than agent-owned. Content and repo binding were verified byte-for-byte
@@ -355,12 +358,15 @@ Track portfolio performance against SPY as an explicit benchmark, not just an im
    hour (e.g. `45 13` → `45 14`) when EST begins. (Same issue as the
    paper account — see that repo's `HISTORY.md` for the original
    discovery.)
-3. **Live Alpaca credentials not yet in place.** All seven triggers exist,
-   are enabled, and are correctly scheduled and bound to this repo, but the
-   `auto-trading-live` CCR environment currently holds placeholder values
-   for `ALPACA_API_KEY`/`ALPACA_SECRET_KEY` — the live Alpaca account itself
-   hasn't been created yet. Every firing will fail until real credentials
-   replace the placeholder. The Capital Preservation Halt section's starting
-   date (`[DATE — fill in once the account is funded]`) also needs a real
-   value once capital is actually deposited, which will require editing all
-   seven trigger prompts again via the Routines UI. See `HISTORY.md`.
+3. **Live Alpaca credentials not yet in place — all seven triggers paused.**
+   All seven triggers exist, are correctly scheduled, and are bound to this
+   repo, but the `auto-trading-live` CCR environment currently holds
+   placeholder values for `ALPACA_API_KEY`/`ALPACA_SECRET_KEY` — the live
+   Alpaca account itself hasn't been created yet. The account owner has
+   paused all seven via the Routines UI rather than let them fire and error
+   out on every window; they'll need to be manually re-enabled once real
+   credentials are in place. The Capital Preservation Halt section's
+   starting date (`[DATE — fill in once the account is funded]`) also needs
+   a real value once capital is actually deposited, which will require
+   editing all seven trigger prompts again via the Routines UI. See
+   `HISTORY.md`.
