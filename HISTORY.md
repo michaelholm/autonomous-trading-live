@@ -107,3 +107,8 @@ file starts fresh from launch and only covers what happens here.
   triggers exist on this account — every one was created through the
   Routines UI), all seven needed a manual paste rather than the mixed
   `update_trigger`/manual-paste split used on the paper account.
+  **Deployed same day**: sent all 7 corrected prompts via `SendUserFile`;
+  account owner pasted each into the Routines UI. Re-pulled `list_triggers`
+  and diffed all 7 contents byte-for-byte against the intended text — all
+  7 matched exactly, each with a fresh `updated_at` timestamp confirming
+  the paste took, and cron unchanged on all 7.
