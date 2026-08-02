@@ -124,3 +124,20 @@ file starts fresh from launch and only covers what happens here.
   and diffed all 7 contents byte-for-byte against the intended text — all
   7 matched exactly, each with a fresh `updated_at` timestamp confirming
   the paste took, and cron unchanged on all 7.
+- 2026-08-02: account owner asked to build a test for the news APIs.
+  Testing (against the paper account's development session) surfaced a
+  real gap: `sec.gov`/`data.sec.gov` are blocked outright by that
+  session's network egress policy (a 403 at the proxy level, confirmed
+  three ways against a working control request). Unknown whether the
+  actual scheduled trigger execution environment shares that restriction.
+  Hardened the SEC Filing Check section on both accounts rather than
+  wait and risk a silent failure: added a required distinct journal note,
+  "SEC EDGAR unreachable this firing," for any outright request failure,
+  so a blocked or failed call can never be silently misread as "no new
+  filings" — the two are now required to be logged differently. Applied
+  the same fix to this account's SCHEDULE.md and all 7 triggers. Since
+  all seven are `"http_api"`-owned, all seven needed a manual paste via
+  `SendUserFile`; re-pulled `list_triggers` afterward and diffed all 7
+  contents byte-for-byte against the intended text — all 7 matched, with
+  fresh `updated_at` timestamps confirming each paste took. See the paper
+  account's `HISTORY.md` for the full reachability-testing detail.
