@@ -149,3 +149,19 @@ file starts fresh from launch and only covers what happens here.
   account's triggers are live and funded. The point-5 unreachable-request
   hardening stays in place regardless as a permanent safety net. Full
   detail in the paper account's `HISTORY.md`.
+- 2026-08-02 (later still): a root-cause analysis on the paper account
+  (its journal history, not this account's — this account hasn't traded
+  yet) found that its recurring wide/stale-quote data issue was not the
+  cause of its stop-loss losses, but did surface a real gap: bar-derived
+  peak/trough values (used for "highest price reached since entry"
+  tracking) had no sanity check, only live bid/ask quotes did. Ported
+  the fix here even though this account isn't trading yet, since the
+  same gap exists in this account's identical rule text and will apply
+  the moment it starts: added a third point to Stop-Loss Confirmation
+  cross-checking any new post-entry high/low against that day's
+  volume-weighted average price (`vw`, already returned by
+  get_stock_bars) using the same 2% threshold as the existing bid/ask
+  check, using the day's close instead of the raw extreme when they
+  diverge. Scoped to only affect newly-set peaks/troughs, never to
+  retroactively loosen an already-active trailing stop. Full root-cause
+  detail in the paper account's `HISTORY.md`.

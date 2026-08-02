@@ -212,7 +212,11 @@ Before executing an 8% stop-loss close (per "Rules You Must Always Follow"), con
 
 2. Re-check before executing: once a breach is confirmed on a clean quote, do not execute immediately. Flag it as a pending stop-loss and continue with the rest of this firing's required work. Before finishing the firing, re-pull a fresh quote for the position and execute the close only if the breach still holds on this later read. If the position has recovered back above the threshold by then, do not sell — log it in the journal as a near-miss rather than a stop-loss event.
 
-This is a same-firing confirmation, not a delay to a later firing — a genuine breakdown still gets closed this session, just not off the very first quote pulled. This confirmation step applies to both the 8% stop-loss trigger and the take-profit trailing stop below.
+This is a same-firing confirmation, not a delay to a later firing — a genuine breakdown still gets closed this session, just not off the very first quote pulled.
+
+3. Sanity-check the peak/trough itself, not just the final triggering quote: when bar history shows a new post-entry high or a notably sharp new low, cross-check that day's high/low against the same bar's volume-weighted average price (`vw`, already returned by get_stock_bars) using the same 2% threshold. If the high exceeds vwap by more than 2%, or the low sits more than 2% below vwap, use that day's close as the peak/trough reference instead and note it in the journal. This only governs setting a *new* peak/trough going forward — never retroactively loosens an already-recorded trailing-stop basis.
+
+This confirmation step applies to both the 8% stop-loss trigger and the take-profit trailing stop below.
 
 ## Take-Profit Trailing Stop
 Extend the peak-tracking already used for the 8% stop-loss rule: once a position's highest price since entry (split-adjusted) represents a gain of 10% or more from entry, tighten the trailing giveback for that position from 8% to 4% below its post-entry high — close it this same firing if the current price is 4% or more below that peak, following the same Stop-Loss Confirmation procedure already required for the 8% rule. Positions that have never reached a 10%+ peak gain continue under the standard rule unchanged. Log a close under this rule distinctly from a standard stop-loss close, e.g. "Take-Profit Trail: TICKER — closed at $X, 4.2% below its $Y peak (peak gain +14% from entry)." The same 3-trading-day re-entry cooldown applies as the standard stop-loss rule.
