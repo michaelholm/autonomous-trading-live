@@ -141,3 +141,11 @@ file starts fresh from launch and only covers what happens here.
   contents byte-for-byte against the intended text — all 7 matched, with
   fresh `updated_at` timestamps confirming each paste took. See the paper
   account's `HISTORY.md` for the full reachability-testing detail.
+- 2026-08-02 (later): account owner allowlisted `*.sec.gov` on the
+  network egress policy. Reachability re-tested and confirmed end-to-end
+  (not just host-level — the full ticker→CIK→filings flow, run against
+  real watchlist/portfolio tickers with real SEC data returned). The SEC
+  Filing Check should now work as designed on future firings, once this
+  account's triggers are live and funded. The point-5 unreachable-request
+  hardening stays in place regardless as a permanent safety net. Full
+  detail in the paper account's `HISTORY.md`.
