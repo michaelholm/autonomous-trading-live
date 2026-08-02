@@ -165,3 +165,8 @@ file starts fresh from launch and only covers what happens here.
   diverge. Scoped to only affect newly-set peaks/troughs, never to
   retroactively loosen an already-active trailing stop. Full root-cause
   detail in the paper account's `HISTORY.md`.
+  **Deployed same day**: pushed to all 7 live triggers via `SendUserFile`
+  (all seven are `"http_api"`-owned, so all seven needed a manual paste).
+  Re-pulled `list_triggers` and diffed all 7 contents byte-for-byte
+  against the intended text — all 7 matched exactly, with fresh
+  `updated_at` timestamps confirming each paste took, cron unchanged.
