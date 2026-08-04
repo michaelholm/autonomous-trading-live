@@ -1,0 +1,83 @@
+{
+  "_comment": "Authoritative source of truth for every tunable numeric threshold this LIVE account's trigger prompts reference. This is a separate file from the paper account's own risk_config.json (separate repo, separate account, separate values by design -- e.g. this account's single-position cap is 15%, not the paper account's 7%, re-derived for a $1,500 account vs $100,000). SCHEDULE.md's prose explains WHY each value is set where it is; every threshold in that prose is written as a `{group.key}` placeholder token matching this file's structure, not a literal number -- a firing resolves each token against the matching key here at read time. Change a value here (plus a HISTORY.md entry explaining why) rather than editing any live trigger prompt; every trigger reads this file fresh each firing, so a single commit here takes effect everywhere without touching the 7 trigger prompts. Values here should generally only diverge from the paper account's after a change has been tested there first -- see the account owner's own stated intent.",
+  "schema_version": 1,
+  "last_updated": "2026-08-04",
+
+  "position_limits": {
+    "_comment": "Rules You Must Always Follow. Single-position cap raised to 15% (from paper's 7%) and position count cap lowered to 10 (from paper's 22) -- re-derived for this account's much smaller size, see 'What's different from the paper account, and why' in SCHEDULE.md.",
+    "single_position_cap_pct": 15,
+    "sector_cap_pct": 25,
+    "position_count_cap": 10
+  },
+
+  "order_execution": {
+    "_comment": "Rules You Must Always Follow / Duplicate-Order Guard",
+    "limit_order_max_offset_pct": 0.2,
+    "daily_order_cap": 12,
+    "duplicate_order_window_minutes": 20
+  },
+
+  "stop_loss": {
+    "_comment": "Rules You Must Always Follow / Stop-Loss Confirmation",
+    "trailing_stop_pct": 8,
+    "reentry_cooldown_trading_days": 3,
+    "quote_sanity_threshold_pct": 2
+  },
+
+  "take_profit": {
+    "_comment": "Rules You Must Always Follow / Take-Profit Trailing Stop",
+    "peak_gain_arm_threshold_pct": 10,
+    "tightened_trailing_stop_pct": 4
+  },
+
+  "circuit_breaker": {
+    "_comment": "Portfolio Drawdown Circuit Breaker",
+    "trailing_decline_threshold_pct": 8,
+    "trailing_decline_lookback_days": 4,
+    "intraday_decline_threshold_pct": 5,
+    "cooldown_trading_days": 3
+  },
+
+  "capital_preservation": {
+    "_comment": "Capital Preservation Halt -- no equivalent on the paper account. starting_capital_usd is the account's actual deposited capital once funded; halt_threshold_pct is the fraction of that capital at or below which all new positions are blocked.",
+    "starting_capital_usd": 1500,
+    "halt_threshold_pct": 50
+  },
+
+  "decision_framework": {
+    "_comment": "Decision Framework. This account has always run qualifying_mode 'unanimous' -- it launched after the paper account's relaxed-then-reverted 3-of-4 experiment, so relaxed_of_n has no history here; kept only for schema parity with the paper account's config, unused while qualifying_mode is 'unanimous'.",
+    "qualifying_mode": "unanimous",
+    "relaxed_of_n": 3,
+    "earnings_gate_trading_days": 2
+  },
+
+  "portfolio_rebalancing": {
+    "_comment": "Portfolio Rebalancing (Trade Evaluation firings only). Trim trigger/target re-derived from the 15% single-position cap (paper's are derived from its 7% cap). Dust floor lowered to $5 (from paper's $25), proportional to this account's smaller size.",
+    "position_trim_trigger_pct": 16,
+    "position_trim_target_pct": 13.5,
+    "sector_trim_trigger_pct": 30,
+    "sector_trim_target_pct": 22.5,
+    "stale_breach_trading_days": 3,
+    "reentry_cooldown_trading_days": 3,
+    "fractional_trim_dust_floor_usd": 5
+  },
+
+  "liquidity_screen": {
+    "_comment": "Liquidity Screen (new positions, Trade Evaluation firings only). Dust floor lowered to $5 (from paper's $25).",
+    "adv_lookback_trading_days": 20,
+    "max_pct_of_adv": 10,
+    "dust_floor_usd": 5
+  },
+
+  "cash_utilization": {
+    "_comment": "Cash Utilization (Trade Evaluation firings only). Dust floor lowered to $5 (from paper's $25).",
+    "cash_target_pct": 10,
+    "dust_floor_usd": 5
+  },
+
+  "benchmark_tracking": {
+    "_comment": "Benchmark Tracking (Trade Evaluation and Journal firings only). No stretch-target figure on this account (paper's 15% cumulative-growth aspiration has no live-account equivalent yet) -- only the trailing-window comparison applies here.",
+    "trailing_window_short_days": 5,
+    "trailing_window_long_days": 20
+  }
+}

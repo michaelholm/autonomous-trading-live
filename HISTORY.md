@@ -170,3 +170,65 @@ file starts fresh from launch and only covers what happens here.
   Re-pulled `list_triggers` and diffed all 7 contents byte-for-byte
   against the intended text — all 7 matched exactly, with fresh
   `updated_at` timestamps confirming each paste took, cron unchanged.
+
+## Risk Config: threshold values pulled into a dedicated config file
+
+- 2026-08-04: ported the paper account's Risk Config work here, after it
+  had been designed, iterated, and deployment-tested on that account
+  first — see that repo's `HISTORY.md` for the full design history
+  (round 1: pull numeric thresholds out of prose into a config file;
+  round 2, same day: replace every prose mention with a `{group.key}`
+  placeholder token resolved against the config file at firing time,
+  rather than a literal number, so a future threshold change never
+  requires editing a trigger prompt again).
+- Created **`risk_config.json` as a separate file from the paper
+  account's own** — same repo-per-account isolation this account was
+  built on from day one (separate credentials, separate CCR
+  environment, separate Alpaca account), extended to configuration:
+  this account's values are its own, re-derived for its $1,500 scale,
+  not copied from paper's $100,000-scale numbers. Notable divergences
+  from paper's config: `position_limits.single_position_cap_pct` 15%
+  (paper: 7%), `position_limits.position_count_cap` 10 (paper: 22),
+  `portfolio_rebalancing.position_trim_trigger_pct`/`_target_pct` 16%/
+  13.5% (paper: 8%/6.3%, re-derived from the different single-position
+  cap), and every `dust_floor_usd` field $5 (paper: $25). Also added a
+  `capital_preservation` group (`starting_capital_usd`,
+  `halt_threshold_pct`) for the Capital Preservation Halt section,
+  which has no paper-account equivalent, and omitted
+  `benchmark_tracking.stretch_target_cumulative_pct` — this account's
+  Benchmark Tracking section never had a cumulative-growth stretch
+  target the way the paper account's does.
+- Rewrote every numeric threshold's mentions throughout SCHEDULE.md's
+  shared base instructions and Trade-Evaluation sections (including
+  the Capital Preservation Halt section paper doesn't have) into
+  `{group.key}` tokens, in the same single full-document sweep as the
+  paper account's round 2 (not just canonical first mentions). Left
+  the same categories of number alone: illustrative example values,
+  SMA/lookback periods not backed by config, and external reference
+  facts (SEC's own rate limit, 13F staleness window) — none of these
+  are tunable thresholds this account controls. Also corrected a stale
+  documentation note in this file's own "Full base instructions"
+  intro, which still read "Not yet pushed to any live trigger — this
+  is the text to use when creating all seven via `create_trigger`"
+  despite all seven having existed and been verified live since
+  launch — left over from before the triggers were actually created.
+- Added the new Risk Config section and extended the Documentation
+  Sync Check the same way as the paper account: a token that fails to
+  resolve against `risk_config.json` is a distinct, explicitly-flagged
+  finding, separate from a trigger-content mismatch.
+- Added a "Current values" reference table to SCHEDULE.md for human
+  skimming, mirroring the paper account's — not the source of truth a
+  firing reads from, only `risk_config.json` is.
+- **Deployment**: all seven live triggers are `"http_api"`-owned (no
+  `meta_mcp` triggers exist on this account), so all seven need a
+  manual Routines UI paste — same as every prior content change here.
+  Corrected text for all seven published as an interactive copy-paste
+  page (with a clipboard-copy button and a fallback to select-and-copy
+  if the Clipboard API is blocked in a sandboxed context, the same
+  design used for the paper account's own round-2 rollout) rather than
+  sent as raw files, since a plain `SendUserFile` delivery had
+  previously failed to render for the account owner on the paper
+  account. Pending the account owner's manual paste on all seven as of
+  this entry. This account's triggers remain paused pending real
+  Alpaca credentials regardless — pasting this content does not by
+  itself resume trading.
