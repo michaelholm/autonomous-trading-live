@@ -228,7 +228,9 @@ file starts fresh from launch and only covers what happens here.
   design used for the paper account's own round-2 rollout) rather than
   sent as raw files, since a plain `SendUserFile` delivery had
   previously failed to render for the account owner on the paper
-  account. Pending the account owner's manual paste on all seven as of
-  this entry. This account's triggers remain paused pending real
-  Alpaca credentials regardless — pasting this content does not by
-  itself resume trading.
+  account. Account owner confirmed all seven pasted the same day;
+  re-pulled `list_triggers` and diffed all seven contents byte-for-byte
+  against the intended text — all seven matched exactly, with fresh
+  `updated_at` timestamps confirming each paste took. This account's
+  triggers remain paused pending real Alpaca credentials regardless —
+  pasting this content does not by itself resume trading.
